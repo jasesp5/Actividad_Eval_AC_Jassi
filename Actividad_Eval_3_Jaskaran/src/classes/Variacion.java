@@ -5,10 +5,24 @@
  */
 package classes;
 
+import java.time.LocalDate;
+
 /**
  *
  * @author Shajinder
  */
 public class Variacion {
-    
+
+    private String identificador;
+
+    private String nombre;
+
+    private float precio;
+
+    private int stock;
+
+    private LocalDate fechaDeAlta;
+
+    private LocalDate fechaDeModificacion;
+
 }
