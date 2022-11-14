@@ -6,12 +6,13 @@
 package classes;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 /**
  *
  * @author Shajinder
  */
-public class Variacion {
+public class Telefono {
 
     private String identificador;
 
@@ -21,14 +22,19 @@ public class Variacion {
 
     private int stock;
 
+    private float peso;
+
     private LocalDate fechaDeAlta;
 
     private LocalDate fechaDeModificacion;
 
-    public Variacion(String nombre, float precio, int stock) {
+    private ArrayList<String> variaciones;
+
+    public Telefono(String nomnbre, float precio, int stock, float peso) {
         this.nombre = nombre;
         this.precio = precio;
         this.stock = stock;
+        this.peso = peso;
         fechaDeAlta = LocalDate.now();
     }
 
@@ -48,12 +54,20 @@ public class Variacion {
         this.stock = stock;
     }
 
+    public void setPeso(float peso) {
+        this.peso = peso;
+    }
+
     public void setFechaDeAlta(LocalDate fechaDeAlta) {
         this.fechaDeAlta = fechaDeAlta;
     }
 
     public void setFechaDeModificacion(LocalDate fechaDeModificacion) {
         this.fechaDeModificacion = fechaDeModificacion;
+    }
+
+    public void setVariaciones(ArrayList<String> variaciones) {
+        this.variaciones = variaciones;
     }
 
     public String getIdentificador() {
@@ -72,12 +86,20 @@ public class Variacion {
         return stock;
     }
 
+    public float getPeso() {
+        return peso;
+    }
+
     public LocalDate getFechaDeAlta() {
         return fechaDeAlta;
     }
 
     public LocalDate getFechaDeModificacion() {
         return fechaDeModificacion;
+    }
+
+    public ArrayList<String> getVariaciones() {
+        return variaciones;
     }
 
 }
