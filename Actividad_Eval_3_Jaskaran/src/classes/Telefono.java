@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public class Telefono {
 
-    private String identificador;
+    private int identificador;
 
     private String nombre;
 
@@ -30,15 +30,14 @@ public class Telefono {
 
     private ArrayList<String> variaciones;
 
-    public Telefono(String nomnbre, float precio, int stock, float peso) {
+    public Telefono(String nombre, float precio, int stock, float peso) {
         this.nombre = nombre;
         this.precio = precio;
         this.stock = stock;
         this.peso = peso;
-        fechaDeAlta = LocalDate.now();
     }
 
-    public void setIdentificador(String identificador) {
+    public void setIdentificador(int identificador) {
         this.identificador = identificador;
     }
 
@@ -70,7 +69,7 @@ public class Telefono {
         this.variaciones = variaciones;
     }
 
-    public String getIdentificador() {
+    public int getIdentificador() {
         return identificador;
     }
 

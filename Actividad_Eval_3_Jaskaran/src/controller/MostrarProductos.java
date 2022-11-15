@@ -5,17 +5,41 @@
  */
 package controller;
 
+import Services.TelefonoService;
+import classes.Telefono;
+import java.sql.SQLException;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Shajinder
  */
 public class MostrarProductos extends javax.swing.JFrame {
 
+    private TelefonoService telefonoService;
+
     /**
      * Creates new form MostrarProductos
      */
     public MostrarProductos() {
         initComponents();
+        this.telefonoService = new TelefonoService();
+
+        mostrarTelefonos();
+
+    }
+
+    public void mostrarTelefonos() {
+        try {
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            for (Telefono telefono : this.telefonoService.mostrarTelefono()) {
+                model.addRow(new Object[]{telefono.getIdentificador(),telefono.getNombre(),telefono.getStock(),telefono.getPrecio(),telefono.getPeso(),telefono.getFechaDeAlta(),telefono.getFechaDeModificacion()});
+
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 
     /**
@@ -30,6 +54,8 @@ public class MostrarProductos extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jButtonVolver = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -56,6 +82,26 @@ public class MostrarProductos extends javax.swing.JFrame {
             }
         });
         jPanel1.add(jButtonVolver, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 450, 170, 50));
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Id", "Nombre", "Stock", "Precio", "Peso", "Fecha Alta", "Fecha Modificacion"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(jTable1);
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 190, 660, 100));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, -4, 820, 600));
 
@@ -109,5 +155,7 @@ public class MostrarProductos extends javax.swing.JFrame {
     private javax.swing.JButton jButtonVolver;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }
