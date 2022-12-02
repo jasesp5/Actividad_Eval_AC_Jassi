@@ -13,11 +13,13 @@ import java.time.LocalDate;
  */
 public class Variacion {
 
-    private String identificador;
+    private int identificador;
 
     private String nombre;
 
     private float precio;
+
+    private float peso;
 
     private int stock;
 
@@ -25,14 +27,32 @@ public class Variacion {
 
     private LocalDate fechaDeModificacion;
 
-    public Variacion(String nombre, float precio, int stock) {
+    private int idTelefeno;
+
+    public Variacion(String nombre, float precio, int stock, float peso) {
         this.nombre = nombre;
         this.precio = precio;
         this.stock = stock;
-        fechaDeAlta = LocalDate.now();
+        this.peso = peso;
     }
 
-    public void setIdentificador(String identificador) {
+    public Variacion() {
+
+    }
+
+    public void setPeso(float peso) {
+        this.peso = peso;
+    }
+
+    public float getPeso() {
+        return peso;
+    }
+
+    public void setIdTelefeno(int idTelefeno) {
+        this.idTelefeno = idTelefeno;
+    }
+
+    public void setIdentificador(int identificador) {
         this.identificador = identificador;
     }
 
@@ -56,7 +76,7 @@ public class Variacion {
         this.fechaDeModificacion = fechaDeModificacion;
     }
 
-    public String getIdentificador() {
+    public int getIdentificador() {
         return identificador;
     }
 
@@ -78,6 +98,10 @@ public class Variacion {
 
     public LocalDate getFechaDeModificacion() {
         return fechaDeModificacion;
+    }
+
+    public int getIdTelefeno() {
+        return idTelefeno;
     }
 
 }

@@ -5,10 +5,17 @@
  */
 package controller;
 
-import Services.TelefonoService;
+import service.TelefonoService;
+import service.VariacionService;
 import classes.Telefono;
+import classes.Variacion;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import translation.Castellano;
 
 /**
  *
@@ -17,6 +24,8 @@ import javax.swing.table.DefaultTableModel;
 public class MostrarProductos extends javax.swing.JFrame {
 
     private TelefonoService telefonoService;
+    private VariacionService variacionService;
+    private DefaultTableModel model;
 
     /**
      * Creates new form MostrarProductos
@@ -24,22 +33,20 @@ public class MostrarProductos extends javax.swing.JFrame {
     public MostrarProductos() {
         initComponents();
         this.telefonoService = new TelefonoService();
-
-        mostrarTelefonos();
+        this.variacionService = new VariacionService();
+        cargarTodosLosTelefonos();
+        this.model = (DefaultTableModel) jTable1.getModel();
 
     }
 
-    public void mostrarTelefonos() {
+    public void cargarTodosLosTelefonos() {
         try {
-            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
             for (Telefono telefono : this.telefonoService.mostrarTelefono()) {
-                model.addRow(new Object[]{telefono.getIdentificador(),telefono.getNombre(),telefono.getStock(),telefono.getPrecio(),telefono.getPeso(),telefono.getFechaDeAlta(),telefono.getFechaDeModificacion()});
-
+                this.jComboBox.addItem(telefono.getNombre());
             }
         } catch (ClassNotFoundException | SQLException e) {
-            System.out.println(e.getMessage());
+            JOptionPane.showMessageDialog(null, Castellano.NO_HAY_TELEFONOS);
         }
-
     }
 
     /**
@@ -56,6 +63,9 @@ public class MostrarProductos extends javax.swing.JFrame {
         jButtonVolver = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jComboBox = new javax.swing.JComboBox<>();
+        jButtonSelccionarTelefono = new javax.swing.JButton();
+        jLabelTelefono = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -67,7 +77,7 @@ public class MostrarProductos extends javax.swing.JFrame {
         jLabel1.setBackground(new java.awt.Color(1, 21, 48));
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 48)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(1, 21, 48));
-        jLabel1.setText("Mostrar productos");
+        jLabel1.setText("Mostrar todo");
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 10, 610, 110));
 
         jButtonVolver.setBackground(new java.awt.Color(1, 21, 48));
@@ -81,19 +91,26 @@ public class MostrarProductos extends javax.swing.JFrame {
                 jButtonVolverActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonVolver, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 450, 170, 50));
+        jPanel1.add(jButtonVolver, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 510, 170, 50));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Id", "Nombre", "Stock", "Precio", "Peso", "Fecha Alta", "Fecha Modificacion"
+                "Nombre Variacion", "Precio", "Peso", "Stock"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -101,7 +118,34 @@ public class MostrarProductos extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jTable1);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 190, 660, 100));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 310, 670, 150));
+
+        jComboBox.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 190, 210, 30));
+
+        jButtonSelccionarTelefono.setBackground(new java.awt.Color(1, 21, 48));
+        jButtonSelccionarTelefono.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jButtonSelccionarTelefono.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonSelccionarTelefono.setText("Seleccionar");
+        jButtonSelccionarTelefono.setAlignmentX(0.5F);
+        jButtonSelccionarTelefono.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonSelccionarTelefono.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSelccionarTelefonoActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButtonSelccionarTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 180, 180, 50));
+
+        jLabelTelefono.setBackground(new java.awt.Color(1, 21, 48));
+        jLabelTelefono.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabelTelefono.setForeground(new java.awt.Color(1, 21, 48));
+        jLabelTelefono.setText("Selecciona el telefono para ver sus variaciones ");
+        jPanel1.add(jLabelTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 90, 470, 70));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, -4, 820, 600));
 
@@ -115,6 +159,24 @@ public class MostrarProductos extends javax.swing.JFrame {
         MenuPrincipal menuPrincipal = new MenuPrincipal();
         menuPrincipal.setVisible(true);
     }//GEN-LAST:event_jButtonVolverActionPerformed
+
+    private void jButtonSelccionarTelefonoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSelccionarTelefonoActionPerformed
+        try {
+            limpiarTabla();
+            int id = this.telefonoService.obtenerIdTelefono((String) this.jComboBox.getSelectedItem());
+            Telefono telefono = this.telefonoService.obtenerTelefono(id);
+            if (!this.variacionService.obtenerVariacionesConLaForeignKey(id).isEmpty()) {
+                telefono.setVariaciones(this.variacionService.obtenerVariacionesConLaForeignKey(id));
+                mostrarVariaciones(telefono.getVariaciones());
+            }
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(MostrarProductos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButtonSelccionarTelefonoActionPerformed
+
+    private void jComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -151,9 +213,27 @@ public class MostrarProductos extends javax.swing.JFrame {
         });
     }
 
+    public void mostrarVariaciones(ArrayList<Variacion> variaciones) {
+
+        for (Variacion variacion : variaciones) {
+            model.addRow(new Object[]{variacion.getNombre(),variacion.getPrecio(),
+                variacion.getPeso(), variacion.getStock()});
+        }
+    }
+
+    public void limpiarTabla() {
+        while (model.getRowCount() > 0) {
+            model.removeRow(0);
+        }
+    }
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonSelccionarTelefono;
     private javax.swing.JButton jButtonVolver;
+    private javax.swing.JComboBox<String> jComboBox;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabelTelefono;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
