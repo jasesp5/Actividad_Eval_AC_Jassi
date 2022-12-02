@@ -18,23 +18,19 @@ public class Telefono {
 
     private String nombre;
 
-    private float precio;
-
-    private int stock;
-
-    private float peso;
-
     private LocalDate fechaDeAlta;
 
     private LocalDate fechaDeModificacion;
 
-    private ArrayList<String> variaciones;
+    private ArrayList<Variacion> variaciones;
 
-    public Telefono(String nombre, float precio, int stock, float peso) {
+    public Telefono(String nombre) {
         this.nombre = nombre;
-        this.precio = precio;
-        this.stock = stock;
-        this.peso = peso;
+        this.variaciones = new ArrayList<>();
+    }
+
+    public Telefono() {
+
     }
 
     public void setIdentificador(int identificador) {
@@ -45,18 +41,6 @@ public class Telefono {
         this.nombre = nombre;
     }
 
-    public void setPrecio(float precio) {
-        this.precio = precio;
-    }
-
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
-
-    public void setPeso(float peso) {
-        this.peso = peso;
-    }
-
     public void setFechaDeAlta(LocalDate fechaDeAlta) {
         this.fechaDeAlta = fechaDeAlta;
     }
@@ -65,7 +49,7 @@ public class Telefono {
         this.fechaDeModificacion = fechaDeModificacion;
     }
 
-    public void setVariaciones(ArrayList<String> variaciones) {
+    public void setVariaciones(ArrayList<Variacion> variaciones) {
         this.variaciones = variaciones;
     }
 
@@ -77,18 +61,6 @@ public class Telefono {
         return nombre;
     }
 
-    public float getPrecio() {
-        return precio;
-    }
-
-    public int getStock() {
-        return stock;
-    }
-
-    public float getPeso() {
-        return peso;
-    }
-
     public LocalDate getFechaDeAlta() {
         return fechaDeAlta;
     }
@@ -97,7 +69,7 @@ public class Telefono {
         return fechaDeModificacion;
     }
 
-    public ArrayList<String> getVariaciones() {
+    public ArrayList<Variacion> getVariaciones() {
         return variaciones;
     }
 

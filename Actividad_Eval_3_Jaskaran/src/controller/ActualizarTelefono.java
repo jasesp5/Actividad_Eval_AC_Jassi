@@ -5,6 +5,16 @@
  */
 package controller;
 
+import service.TelefonoService;
+import translation.Castellano;
+import classes.Telefono;
+import java.awt.HeadlessException;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Shajinder
@@ -14,8 +24,22 @@ public class ActualizarTelefono extends javax.swing.JFrame {
     /**
      * Creates new form ActualizarTelefono
      */
+    private TelefonoService telefonoService;
+
     public ActualizarTelefono() {
         initComponents();
+        this.telefonoService = new TelefonoService();
+        cargarTodosLosTelefonos();
+    }
+
+    public void cargarTodosLosTelefonos() {
+        try {
+            for (Telefono telefono : this.telefonoService.mostrarTelefono()) {
+                this.jComboBox1.addItem(telefono.getNombre());
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            JOptionPane.showMessageDialog(null, Castellano.NO_HAY_TELEFONOS);
+        }
     }
 
     /**
@@ -30,6 +54,10 @@ public class ActualizarTelefono extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jButtonVolver = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jTextFieldNombre = new javax.swing.JTextField();
+        jButtonSelccionarTelefono = new javax.swing.JButton();
+        jButtonModificar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -55,7 +83,54 @@ public class ActualizarTelefono extends javax.swing.JFrame {
                 jButtonVolverActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonVolver, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 450, 170, 50));
+        jPanel1.add(jButtonVolver, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 450, 170, 50));
+
+        jComboBox1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jPanel1.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 150, 210, 30));
+
+        jTextFieldNombre.setBackground(new java.awt.Color(250, 250, 250));
+        jTextFieldNombre.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jTextFieldNombre.setText("Nombre");
+        jTextFieldNombre.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(219, 219, 219)));
+        jTextFieldNombre.setEnabled(false);
+        jTextFieldNombre.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTextFieldNombreMouseClicked(evt);
+            }
+        });
+        jPanel1.add(jTextFieldNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 140, 270, 40));
+
+        jButtonSelccionarTelefono.setBackground(new java.awt.Color(1, 21, 48));
+        jButtonSelccionarTelefono.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jButtonSelccionarTelefono.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonSelccionarTelefono.setText("Seleccionar");
+        jButtonSelccionarTelefono.setAlignmentX(0.5F);
+        jButtonSelccionarTelefono.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonSelccionarTelefono.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSelccionarTelefonoActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButtonSelccionarTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 230, 180, 50));
+
+        jButtonModificar.setBackground(new java.awt.Color(1, 21, 48));
+        jButtonModificar.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jButtonModificar.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonModificar.setText("Modificar");
+        jButtonModificar.setAlignmentX(0.5F);
+        jButtonModificar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonModificar.setEnabled(false);
+        jButtonModificar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonModificarMouseClicked(evt);
+            }
+        });
+        jButtonModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonModificarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButtonModificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 450, 170, 50));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 790, 580));
 
@@ -63,12 +138,39 @@ public class ActualizarTelefono extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButtonModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonModificarActionPerformed
+        // TODO add your handling code here:
+        modificarElTelefono();
+    }//GEN-LAST:event_jButtonModificarActionPerformed
+
+    private void jButtonSelccionarTelefonoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSelccionarTelefonoActionPerformed
+
+        try {
+            int id = this.telefonoService.obtenerIdTelefono((String) this.jComboBox1.getSelectedItem());
+            Telefono telefono = telefonoService.obtenerTelefono(id);
+            jTextFieldNombre.setText(telefono.getNombre());
+            habilitarBotones();
+
+        } catch (SQLException |NullPointerException| ClassNotFoundException ex) {
+            Logger.getLogger(ActualizarTelefono.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+    }//GEN-LAST:event_jButtonSelccionarTelefonoActionPerformed
+
+    private void jTextFieldNombreMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFieldNombreMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldNombreMouseClicked
+
     private void jButtonVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonVolverActionPerformed
         // TODO add your handling code here:
         this.dispose();
         MenuPrincipal menuPrincipal = new MenuPrincipal();
         menuPrincipal.setVisible(true);
     }//GEN-LAST:event_jButtonVolverActionPerformed
+
+    private void jButtonModificarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonModificarMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonModificarMouseClicked
 
     /**
      * @param args the command line arguments
@@ -105,9 +207,49 @@ public class ActualizarTelefono extends javax.swing.JFrame {
         });
     }
 
+    public void abrirVentanaOtraVez() {
+        this.dispose();
+        ActualizarTelefono actualizarTelefono = new ActualizarTelefono();
+        actualizarTelefono.setVisible(true);
+
+    }
+
+    public void habilitarBotones() {
+        this.jTextFieldNombre.setEnabled(true);
+        this.jButtonModificar.setEnabled(true);
+
+    }
+
+    public void modificarElTelefono() {
+        try {
+            if (!comprobarSiElJTexfieldEstaVacio()) {
+                String nombre = jTextFieldNombre.getText();
+                LocalDate fechaModificacion = LocalDate.now();
+                int id = this.telefonoService.obtenerIdTelefono((String) this.jComboBox1.getSelectedItem());
+                this.telefonoService.modificarTelefono(id, nombre, fechaModificacion);
+                JOptionPane.showMessageDialog(null, Castellano.SE_MODIFICADO_CORRECTAMENTE);
+                abrirVentanaOtraVez();
+            } else {
+                JOptionPane.showMessageDialog(null, Castellano.CAMPO_NOMBRE_VACIO);
+            }
+        } catch (HeadlessException | ClassNotFoundException | NumberFormatException | SQLException e) {
+            JOptionPane.showMessageDialog(null, Castellano.ERROR_AL_INTRODUCIR_DATOS);
+           
+        }
+    }
+
+    public boolean comprobarSiElJTexfieldEstaVacio() {
+        return this.jTextFieldNombre.getText().isEmpty();
+    }
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonModificar;
+    private javax.swing.JButton jButtonSelccionarTelefono;
     private javax.swing.JButton jButtonVolver;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField jTextFieldNombre;
     // End of variables declaration//GEN-END:variables
 }

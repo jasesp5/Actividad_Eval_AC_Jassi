@@ -5,6 +5,16 @@
  */
 package controller;
 
+import service.TelefonoService;
+import service.VariacionService;
+import translation.Castellano;
+import classes.Telefono;
+import classes.Variacion;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Shajinder
@@ -14,8 +24,26 @@ public class ActualizarVariacion extends javax.swing.JFrame {
     /**
      * Creates new form ActualizarVariacion
      */
+    private VariacionService variacionService;
+    private TelefonoService telofonoService;
+    private static int idVariacion;
+
     public ActualizarVariacion() {
         initComponents();
+        this.variacionService = new VariacionService();
+        this.telofonoService = new TelefonoService();
+        mostrarVariaciones();
+    }
+
+    public void mostrarVariaciones() {
+        try {
+            for (Variacion variacion : this.variacionService.obtenerTodasLasVariaciones()) {
+                this.jComboBoxVariacion.addItem(variacion.getNombre());
+            }
+        } catch (SQLException |NullPointerException | ClassNotFoundException ex) {
+            Logger.getLogger(ActualizarVariacion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     /**
@@ -28,8 +56,23 @@ public class ActualizarVariacion extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        jLabelSelecionar = new javax.swing.JLabel();
         jButtonVolver = new javax.swing.JButton();
+        jComboBoxVariacion = new javax.swing.JComboBox<>();
+        jButtonSelccionarVariacion = new javax.swing.JButton();
+        jTextFieldNombre = new javax.swing.JTextField();
+        jTextFieldPrecio = new javax.swing.JTextField();
+        jLabelErrorPrecio = new javax.swing.JLabel();
+        jTextFieldStock = new javax.swing.JTextField();
+        jLabelErrorNumero = new javax.swing.JLabel();
+        jTextFieldModelo = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jLabelSelecionar1 = new javax.swing.JLabel();
+        jComboBoxTelefono = new javax.swing.JComboBox<>();
+        jButtonSelccionarTelefono = new javax.swing.JButton();
+        jButtonSelccionarModificar = new javax.swing.JButton();
+        jTextFieldPeso = new javax.swing.JTextField();
+        jLabelErrorPeso = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -38,11 +81,11 @@ public class ActualizarVariacion extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setBackground(new java.awt.Color(1, 21, 48));
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 48)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(1, 21, 48));
-        jLabel1.setText("Actualizar variación ");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 10, 610, 110));
+        jLabelSelecionar.setBackground(new java.awt.Color(1, 21, 48));
+        jLabelSelecionar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabelSelecionar.setForeground(new java.awt.Color(1, 21, 48));
+        jLabelSelecionar.setText("Selecciona si quieres cambiar telefono");
+        jPanel1.add(jLabelSelecionar, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 310, 330, 40));
 
         jButtonVolver.setBackground(new java.awt.Color(1, 21, 48));
         jButtonVolver.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -55,9 +98,163 @@ public class ActualizarVariacion extends javax.swing.JFrame {
                 jButtonVolverActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonVolver, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 450, 170, 50));
+        jPanel1.add(jButtonVolver, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 500, 170, 50));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, -4, 810, 600));
+        jPanel1.add(jComboBoxVariacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 170, 190, 30));
+
+        jButtonSelccionarVariacion.setBackground(new java.awt.Color(1, 21, 48));
+        jButtonSelccionarVariacion.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jButtonSelccionarVariacion.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonSelccionarVariacion.setText("Seleccionar");
+        jButtonSelccionarVariacion.setAlignmentX(0.5F);
+        jButtonSelccionarVariacion.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonSelccionarVariacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSelccionarVariacionActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButtonSelccionarVariacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 230, 180, 50));
+
+        jTextFieldNombre.setBackground(new java.awt.Color(250, 250, 250));
+        jTextFieldNombre.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jTextFieldNombre.setText("Nombre");
+        jTextFieldNombre.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(219, 219, 219)));
+        jTextFieldNombre.setEnabled(false);
+        jTextFieldNombre.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTextFieldNombreMouseClicked(evt);
+            }
+        });
+        jPanel1.add(jTextFieldNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 140, 270, 40));
+
+        jTextFieldPrecio.setBackground(new java.awt.Color(250, 250, 250));
+        jTextFieldPrecio.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jTextFieldPrecio.setText("Precio");
+        jTextFieldPrecio.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(219, 219, 219)));
+        jTextFieldPrecio.setEnabled(false);
+        jTextFieldPrecio.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTextFieldPrecioMouseClicked(evt);
+            }
+        });
+        jTextFieldPrecio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldPrecioActionPerformed(evt);
+            }
+        });
+        jTextFieldPrecio.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextFieldPrecioKeyTyped(evt);
+            }
+        });
+        jPanel1.add(jTextFieldPrecio, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 200, 270, 40));
+
+        jLabelErrorPrecio.setBackground(new java.awt.Color(255, 0, 0));
+        jLabelErrorPrecio.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabelErrorPrecio.setForeground(new java.awt.Color(255, 0, 0));
+        jPanel1.add(jLabelErrorPrecio, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 250, 430, 30));
+
+        jTextFieldStock.setBackground(new java.awt.Color(250, 250, 250));
+        jTextFieldStock.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jTextFieldStock.setText("Stock");
+        jTextFieldStock.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(219, 219, 219)));
+        jTextFieldStock.setEnabled(false);
+        jTextFieldStock.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTextFieldStockMouseClicked(evt);
+            }
+        });
+        jTextFieldStock.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextFieldStockKeyTyped(evt);
+            }
+        });
+        jPanel1.add(jTextFieldStock, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 270, 270, 40));
+
+        jLabelErrorNumero.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabelErrorNumero.setForeground(new java.awt.Color(255, 0, 0));
+        jPanel1.add(jLabelErrorNumero, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 330, 270, 30));
+
+        jTextFieldModelo.setBackground(new java.awt.Color(250, 250, 250));
+        jTextFieldModelo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jTextFieldModelo.setText("Modelo");
+        jTextFieldModelo.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(219, 219, 219)));
+        jTextFieldModelo.setEnabled(false);
+        jTextFieldModelo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTextFieldModeloMouseClicked(evt);
+            }
+        });
+        jPanel1.add(jTextFieldModelo, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 420, 270, 40));
+
+        jLabel2.setBackground(new java.awt.Color(1, 21, 48));
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 48)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(1, 21, 48));
+        jLabel2.setText("Actualizar variación ");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 0, 610, 110));
+
+        jLabelSelecionar1.setBackground(new java.awt.Color(1, 21, 48));
+        jLabelSelecionar1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabelSelecionar1.setForeground(new java.awt.Color(1, 21, 48));
+        jLabelSelecionar1.setText("Selecciona la variación que quieres modificar");
+        jPanel1.add(jLabelSelecionar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 120, 330, 40));
+
+        jComboBoxTelefono.setEnabled(false);
+        jComboBoxTelefono.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxTelefonoActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jComboBoxTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 360, 180, 30));
+
+        jButtonSelccionarTelefono.setBackground(new java.awt.Color(1, 21, 48));
+        jButtonSelccionarTelefono.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jButtonSelccionarTelefono.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonSelccionarTelefono.setText("Seleccionar");
+        jButtonSelccionarTelefono.setAlignmentX(0.5F);
+        jButtonSelccionarTelefono.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonSelccionarTelefono.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSelccionarTelefonoActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButtonSelccionarTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 420, 180, 50));
+
+        jButtonSelccionarModificar.setBackground(new java.awt.Color(1, 21, 48));
+        jButtonSelccionarModificar.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jButtonSelccionarModificar.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonSelccionarModificar.setText("Modificar");
+        jButtonSelccionarModificar.setAlignmentX(0.5F);
+        jButtonSelccionarModificar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonSelccionarModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSelccionarModificarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButtonSelccionarModificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 500, 180, 50));
+
+        jTextFieldPeso.setBackground(new java.awt.Color(250, 250, 250));
+        jTextFieldPeso.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jTextFieldPeso.setText("Peso");
+        jTextFieldPeso.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(219, 219, 219)));
+        jTextFieldPeso.setEnabled(false);
+        jTextFieldPeso.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTextFieldPesoMouseClicked(evt);
+            }
+        });
+        jTextFieldPeso.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextFieldPesoKeyTyped(evt);
+            }
+        });
+        jPanel1.add(jTextFieldPeso, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 340, 270, 40));
+
+        jLabelErrorPeso.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabelErrorPeso.setForeground(new java.awt.Color(255, 0, 0));
+        jPanel1.add(jLabelErrorPeso, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 390, 470, 30));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 810, 600));
 
         pack();
         setLocationRelativeTo(null);
@@ -69,6 +266,135 @@ public class ActualizarVariacion extends javax.swing.JFrame {
         MenuPrincipal menuPrincipal = new MenuPrincipal();
         menuPrincipal.setVisible(true);
     }//GEN-LAST:event_jButtonVolverActionPerformed
+
+    private void jButtonSelccionarVariacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSelccionarVariacionActionPerformed
+
+        try {
+            idVariacion = this.variacionService.obtenerIdVariacion((String) this.jComboBoxVariacion.getSelectedItem());
+            Variacion variacion = this.variacionService.obtenerVariacion(idVariacion);
+            jTextFieldNombre.setText(variacion.getNombre());
+            jTextFieldStock.setText(String.valueOf(variacion.getStock()));
+            jTextFieldPrecio.setText(String.valueOf(variacion.getPrecio()));
+            jTextFieldPeso.setText(String.valueOf(variacion.getPeso()));
+            Telefono telefono = this.telofonoService.obtenerTelefono(variacion.getIdTelefeno());
+            jTextFieldModelo.setText(telefono.getNombre());
+            cargarTodosLosTelefonos();
+            habilitarBotones();
+        } catch (SQLException | NullPointerException | ClassNotFoundException ex) {
+            Logger.getLogger(ActualizarVariacion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButtonSelccionarVariacionActionPerformed
+
+    private void jTextFieldNombreMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFieldNombreMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldNombreMouseClicked
+
+    private void jTextFieldPrecioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFieldPrecioMouseClicked
+        // TODO add your handling code here:
+       
+    }//GEN-LAST:event_jTextFieldPrecioMouseClicked
+
+    private void jTextFieldPrecioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldPrecioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldPrecioActionPerformed
+
+    private void jTextFieldPrecioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldPrecioKeyTyped
+        // TODO add your handling code here:
+        // TODO add your handling code here:
+        try {
+            float precio = Float.valueOf(jTextFieldPrecio.getText());
+            this.jLabelErrorPrecio.setText("");
+        } catch (NumberFormatException e) {
+            this.jLabelErrorPrecio.setText(Castellano.ERROR_DECIMAL);
+        }
+    }//GEN-LAST:event_jTextFieldPrecioKeyTyped
+
+    private void jTextFieldModeloMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFieldModeloMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldModeloMouseClicked
+
+    private void jComboBoxTelefonoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTelefonoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxTelefonoActionPerformed
+
+    private void jButtonSelccionarTelefonoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSelccionarTelefonoActionPerformed
+        this.jTextFieldModelo.setText((String) this.jComboBoxTelefono.getSelectedItem());
+    }//GEN-LAST:event_jButtonSelccionarTelefonoActionPerformed
+
+    private void jButtonSelccionarModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSelccionarModificarActionPerformed
+        // TODO add your handling code here:
+
+        try {
+            if (crearVariacion() != null) {
+                if (!this.jTextFieldNombre.getText().isEmpty()) {
+                    Variacion variacion = crearVariacion();
+                    variacion.setIdentificador(idVariacion);
+                    int telefonoId = this.telofonoService.obtenerIdTelefono(this.jTextFieldModelo.getText());
+                    variacion.setIdTelefeno(telefonoId);
+                    this.variacionService.modificarVariacion(variacion);
+                    JOptionPane.showMessageDialog(null, Castellano.SE_ACTUALIZADO_LA_VARIACION);
+                    volverAbrirLaVentana();
+                } else {
+                    JOptionPane.showMessageDialog(null, Castellano.CAMPO_NOMBRE_VACIO);
+                }
+
+            }
+
+        } catch (SQLException | NumberFormatException | ClassNotFoundException ex) {
+            Logger.getLogger(ActualizarVariacion.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, Castellano.ERROR_AL_ACTUALIZAR_VARIACION);
+            volverAbrirLaVentana();
+        }
+    }//GEN-LAST:event_jButtonSelccionarModificarActionPerformed
+    /**
+     * Método que crea la variación
+     *
+     * @return Variacion
+     */
+    public Variacion crearVariacion() {
+        try {
+            String nombre = this.jTextFieldNombre.getText();
+            int stock = Integer.valueOf(this.jTextFieldStock.getText());
+            float precio = Float.valueOf(this.jTextFieldPrecio.getText());
+            float peso = Float.valueOf(this.jTextFieldPeso.getText());
+            return new Variacion(nombre, precio, stock,peso);
+        } catch (NumberFormatException exception) {
+            JOptionPane.showMessageDialog(null, Castellano.ERROR_AL_INTRODUCIR_DATOS);
+            volverAbrirLaVentana();
+        }
+        return null;
+
+    }
+    private void jTextFieldStockKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldStockKeyTyped
+        char character = evt.getKeyChar();
+        if (!Character.isDigit(character)) {
+            this.jLabelErrorNumero.setText(Castellano.ERROR_NUMERO);
+            evt.consume();
+        } else {
+            this.jLabelErrorNumero.setText("");
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldStockKeyTyped
+
+    private void jTextFieldStockMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFieldStockMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldStockMouseClicked
+
+    private void jTextFieldPesoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFieldPesoMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldPesoMouseClicked
+
+    private void jTextFieldPesoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldPesoKeyTyped
+        // TODO add your handling code here:
+
+        try {
+            float peso = Float.valueOf(jTextFieldPeso.getText());
+            this.jLabelErrorPeso.setText("");
+
+        } catch (NumberFormatException e) {
+            this.jLabelErrorPeso.setText(Castellano.ERROR_DECIMAL);
+
+        }
+    }//GEN-LAST:event_jTextFieldPesoKeyTyped
 
     /**
      * @param args the command line arguments
@@ -105,9 +431,49 @@ public class ActualizarVariacion extends javax.swing.JFrame {
         });
     }
 
+    public void habilitarBotones() {
+        this.jTextFieldNombre.setEnabled(true);
+        this.jTextFieldStock.setEnabled(true);
+        this.jTextFieldPrecio.setEnabled(true);
+        this.jComboBoxTelefono.setEnabled(true);
+        this.jTextFieldPeso.setEnabled(true);
+    }
+
+    public void volverAbrirLaVentana() {
+        this.dispose();
+        ActualizarVariacion actualizarVariacion = new ActualizarVariacion();
+        actualizarVariacion.setVisible(true);
+
+    }
+
+    public void cargarTodosLosTelefonos() {
+        try {
+            for (Telefono telefono : this.telofonoService.mostrarTelefono()) {
+                this.jComboBoxTelefono.addItem(telefono.getNombre());
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            JOptionPane.showMessageDialog(null, Castellano.NO_HAY_TELEFONOS);
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonSelccionarModificar;
+    private javax.swing.JButton jButtonSelccionarTelefono;
+    private javax.swing.JButton jButtonSelccionarVariacion;
     private javax.swing.JButton jButtonVolver;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JComboBox<String> jComboBoxTelefono;
+    private javax.swing.JComboBox<String> jComboBoxVariacion;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabelErrorNumero;
+    private javax.swing.JLabel jLabelErrorPeso;
+    private javax.swing.JLabel jLabelErrorPrecio;
+    private javax.swing.JLabel jLabelSelecionar;
+    private javax.swing.JLabel jLabelSelecionar1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField jTextFieldModelo;
+    private javax.swing.JTextField jTextFieldNombre;
+    private javax.swing.JTextField jTextFieldPeso;
+    private javax.swing.JTextField jTextFieldPrecio;
+    private javax.swing.JTextField jTextFieldStock;
     // End of variables declaration//GEN-END:variables
 }
